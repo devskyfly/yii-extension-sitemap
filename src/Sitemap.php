@@ -25,29 +25,35 @@ class Sitemap extends BaseObject
     public $container=null;
     
     /**
-     * 
-     * @var yii\httpclient\Request
+     *
+     * @var callable
      */
-    public $request=null;
+    public $container_init_callback=null;
     
     
     public function init()
     {
         parent::init();
         
-        
-        if(Vrbl::isNull($this->request)){
-            $this->request=(new Client())->createRequest();
-            $this->request->setMethod('GET');
+        if(Vrbl::isNull($this->container)){
+            $this->container=new Container();
         }else{
-            if(!Obj::isA($this->request, Request::class)){
-                throw new \InvalidArgumentException('Property $request is not '.Request::class.' class.');
+            if(!Obj::isA($this->container, Container::class)){
+                throw new \InvalidArgumentException('Property $container is not '.Container::class.' class.');
             }
         }
         
         $this->checkSiteMapPath();
     }
     
+    public function initContainer()
+    {
+        if(!Vrbl::isCallable($this->container_init_callback)){
+           throw new \InvalidArgumentException(); 
+        }
+        $this->container->initLists($this->container_init_callback);
+        return $this;
+    }
 
     /**
      * @todo Nead to realize

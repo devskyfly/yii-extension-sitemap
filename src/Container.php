@@ -3,7 +3,13 @@ namespace devskyfly\yiiExtensionSitemap;
 
 use devskyfly\php56\types\Arr;
 use devskyfly\php56\types\Str;
+use devskyfly\php56\types\Vrbl;
+use Yii;
 use yii\base\BaseObject;
+use yii\console\Application;
+use yii\helpers\BaseConsole;
+
+
 
 class Container extends BaseObject
 {
@@ -18,6 +24,31 @@ class Container extends BaseObject
      * @var PageAsset[]
      */
     protected $pages_asset_list=[];
+    
+    
+    /**
+     * 
+     * @var callable
+     */
+    public $init_callback=null;
+    
+    public function init()
+    {
+        parent::init();
+    }
+    
+    public function initLists($callback=null)
+    {
+        BaseConsole::stdout('initLists!!!'.PHP_EOL);
+        if(Vrbl::isNull($callback)){
+            $callback=$this->init_callback;
+        }
+        if(!Vrbl::isCallable($callback)){
+            throw new \InvalidArgumentException('Param callback is not callable type.');
+        }
+        $callback($this);
+        return $this;
+    }
     
     /**
      * 
@@ -129,12 +160,12 @@ class Container extends BaseObject
         if(!Str::isString($route)){
             throw new \InvalidArgumentException('Param $route is not string type.');
         }
-        $generator=$this->getPagesList();
-        foreach ($generator as $item){
-            if($item['route']==$route){
-                return $item;
-            }
+        
+        if(Arr::keyExists($this->pages_list, $route))
+        {
+            return $this->pages_list[$route];
+        }else{
+            return null;
         }
-        return null;
     }
 }

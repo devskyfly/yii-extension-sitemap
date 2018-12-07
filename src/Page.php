@@ -78,6 +78,11 @@ class Page extends ContainerItem
     {
         $content_callback=$this->content_callback;
         if(!Vrbl::isCallable($content_callback)){
+            
+            if(Vrbl::isNull($request)){
+                $request=(new Client())->createRequest();
+            }
+            
             $oldControllerNamespace=Yii::$app->controllerNamespace;
             Yii::$app->controllerNamespace='@frontend/controllers';
             
