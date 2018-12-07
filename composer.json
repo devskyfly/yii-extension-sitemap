@@ -1,0 +1,13 @@
+{
+	"name" : "devskyfly/yii-extension-sitemap",
+	"license" : "MIT",
+	"authors" : [{
+			"name" : "Ivan",
+			"email" : "devskyfly@gmail.com"
+		}
+	],
+	"require" : {
+		"php" : ">=5.4.0",
+		"yiisoft/yii2" : "~2.0.14"
+	}
+}
