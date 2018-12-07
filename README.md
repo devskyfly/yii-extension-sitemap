@@ -1,6 +1,6 @@
 ## Расширение Sitemap
 
-### Конфигурация
+### Конфигурация common
 
 ```php 
 //Компонент
@@ -12,6 +12,16 @@
 'on beforeRequest'=>function($event){
     Yii::$app->sitemap->initContainer();
 }
+```
+
+### Концигурация console
+
+```php
+'urlManager' => [
+    'class' => 'yii\web\UrlManager',
+    'scriptUrl' => 'http://yii-basic-test',
+    'enablePrettyUrl' => true,
+]
 ```
 
 ### Инициализация sitemap_callback

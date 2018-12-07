@@ -39,7 +39,6 @@ class Container extends BaseObject
     
     public function initLists($callback=null)
     {
-        BaseConsole::stdout('initLists!!!'.PHP_EOL);
         if(Vrbl::isNull($callback)){
             $callback=$this->init_callback;
         }
