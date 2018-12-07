@@ -1,5 +1,5 @@
 <?php
-namespace devskyfly\yiiExtension\sitemap;
+namespace devskyfly\yiiExtensionSitemap;
 
 use yii\base\BaseObject;
 

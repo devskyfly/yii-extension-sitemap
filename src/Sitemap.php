@@ -1,10 +1,14 @@
 <?php
-namespace devskyfly\yiiExtension\sitemap;
+namespace devskyfly\yiiExtensionSitemap;
 
 use devskyfly\php56\libs\fileSystem\Dirs;
+use devskyfly\php56\types\Vrbl;
 use Yii;
 use yii\base\BaseObject;
 use yii\base\InvalidArgumentException;
+use yii\httpclient\Request;
+use yii\httpclient\Client;
+use devskyfly\php56\types\Obj;
 
 class Sitemap extends BaseObject
 {
@@ -22,39 +26,41 @@ class Sitemap extends BaseObject
     
     /**
      * 
-     * @var yii\httpclient\Client
+     * @var yii\httpclient\Request
      */
-    public $client=null;
+    public $request=null;
     
     
     public function init()
     {
         parent::init();
         
+        
+        if(Vrbl::isNull($this->request)){
+            $this->request=(new Client())->createRequest();
+            $this->request->setMethod('GET');
+        }else{
+            if(!Obj::isA($this->request, Request::class)){
+                throw new \InvalidArgumentException('Property $request is not '.Request::class.' class.');
+            }
+        }
+        
         $this->checkSiteMapPath();
     }
     
-    /**
-     *
-     * @return \devskyfly\yiiModuleAdminPanel\helpers\sitemap\Generator
-     */
-    public function getPages()
-    {
-        return $this->container->getList();
-    }
-    
+
     /**
      * @todo Nead to realize
      */
     public function generateXml()
     {
-        $generator=$this->getPages();
+       /*  
+        $generator=$this->container->getPages();
         foreach ($generator as $item){
             
         }
+        */
     }
-    
-    
     
     /**
      *

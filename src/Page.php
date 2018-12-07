@@ -1,5 +1,5 @@
 <?php
-namespace devskyfly\yiiExtension\sitemap;
+namespace devskyfly\yiiExtensionSitemap;
 
 use PHPHtmlParser\Dom;
 use devskyfly\php56\types\Arr;
@@ -12,10 +12,13 @@ use yii\helpers\Url;
 use yii\httpclient\Client;
 use yii\helpers\ArrayHelper;
 use yii\httpclient\Request;
+use yii\helpers\BaseConsole;
 
 
 class Page extends ContainerItem
 {
+    public $searchable=true;
+    
     public $data_time;
     
     public $title;
@@ -23,14 +26,13 @@ class Page extends ContainerItem
     public $description;
     
     public $route;
-    public $params=[];
+    public $route_params=[];
     
+    public $class="";
+    public $content_callback=null;
     public $wrapper_tag="main";
     
-    public $searchable=true;
-    public $class="";
-    public $query_params=[];
-    public $callback=null;
+    public $linked_object;
     
     public function init()
     {
@@ -50,10 +52,6 @@ class Page extends ContainerItem
             throw new \InvalidArgumentException('Property $route is not string type.');
         }
         
-        if(!Arr::isArray($this->params)){
-            throw new \InvalidArgumentException('Property $params is not array type.');
-        }
-        
         if(!Str::isString($this->wrapper_tag)){
             throw new \InvalidArgumentException('Property $wrapper_tag is not string type.');
         }
@@ -66,34 +64,40 @@ class Page extends ContainerItem
             throw new \InvalidArgumentException('Property $class is not string type.');
         }
         
-        if(!Arr::isArray($this->query_params)){
-            throw new \InvalidArgumentException('Property $query_params is not array type.');
+        if(!Arr::isArray($this->route_params)){
+            throw new \InvalidArgumentException('Property $route_params is not array type.');
         }
     }
     
+    /**
+     * 
+     * @param Request $request
+     * @return string
+     */
     public function getContent(Request $request=null)
     {
-        if(!Vrbl::isCallable($this->callback)){
+        $content_callback=$this->content_callback;
+        if(!Vrbl::isCallable($content_callback)){
             $oldControllerNamespace=Yii::$app->controllerNamespace;
             Yii::$app->controllerNamespace='@frontend/controllers';
-            $route=ArrayHelper::merge($this->route, $this->params);
+            
+            $route=ArrayHelper::merge([$this->route], $this->route_params);
             $url=Url::toRoute($route);
-            $request->setMethod('GET')
-            ->setFormat(Client::FORMAT_RAW_URLENCODED)
+            
+            $request
             ->setUrl(Url::toRoute($route));
             $response=$request->send();
             
             $data=$response->content;
             $dom= new Dom();
             $data=$dom->loadStr($data,[])->find($this->wrapper_tag)[0];
+            
             Yii::$app->controllerNamespace=$oldControllerNamespace;
             return $data->__toString();
         }else{
-            $callback=$this->contentCallback;
-            return $callback($this);
+            $callback=$this->content_callback;
+            return $callback($this->linked_object);
         }
-        
+
     }
-    
-    
 }
