@@ -10,6 +10,7 @@ use Yii;
 use yii\base\BaseObject;
 use yii\helpers\Url;
 use yii\httpclient\Client;
+use yii\httpclient\Exception;
 use yii\helpers\ArrayHelper;
 use yii\httpclient\Request;
 use yii\helpers\BaseConsole;
@@ -92,6 +93,10 @@ class Page extends ContainerItem
             $request
             ->setUrl(Url::toRoute($route));
             $response=$request->send();
+            
+            if($response->statusCode!=200){
+                throw new Exception("Status code is not 200.");
+            }
             
             $data=$response->content;
             $dom= new Dom();
