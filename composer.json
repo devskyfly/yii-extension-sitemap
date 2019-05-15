@@ -7,9 +7,11 @@
 		}
 	],
 	"require" : {
-		"php" : ">=5.4.0",
+		"php" : ">=5.6.0",
 		"yiisoft/yii2" : "~2.0.14",
-		"paquettg/php-html-parser":"^1.7"
+		"paquettg/php-html-parser":"^1.7",
+		"devskyfly/libs" : "dev-dev",
+		"devskyfly/php56" : "dev-dev"
 	},
 	"autoload" : {
 		"psr-4" : {
