@@ -14,7 +14,7 @@ return [
         '@tests' => dirname(__DIR__)
     ],
     'language' => 'en-US',
-    'controllerNamespace'=>'tests\\app\\controllers\\',
+    'controllerNamespace'=>'tests\\app\\controllers',
     'components' => [
         //'db' => $db,
         /*'mailer' => [
