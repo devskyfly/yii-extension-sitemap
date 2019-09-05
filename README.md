@@ -4,34 +4,27 @@
 
 ```php 
 //Компонент
-'sitemap' => [
-    'class'=>'devskyfly\yiiExtensionSitemap\Sitemap',
-    'container_init_callback'=>require_once __DIR__.'/sitemap_callback.php'
-],
-//События приложения
-'on beforeRequest'=>function($event){
-    Yii::$app->sitemap->initContainer();
-}
-```
-
-### Концигурация console
-
-```php
-'urlManager' => [
-    'class' => 'yii\web\UrlManager',
-    'scriptUrl' => 'http://yii-basic-test',
-    'enablePrettyUrl' => true,
+return [
+    'bootstrap'=>[
+        'sitemap' //компонент регистрирует свои консольные команды  
+    ]
+    'components'=>[
+        'sitemap' => [
+            'class'=>'devskyfly\yiiExtensionSitemap\Sitemap',
+            'initCallback'=>require_once __DIR__.'/sitemap-callback.php'
+        ],
+    ]
 ]
 ```
 
-### Инициализация sitemap_callback
+### Инициализация sitemap-callback.php
 
 ```php
 use app\models\moduleAdminPanel\contentPanel\entityWithoutSection\EntityWithoutSection;
 use devskyfly\yiiExtensionSitemap\Page;
 use devskyfly\yiiExtensionSitemap\PageAsset;
 
-return $init_callback=function($container){
+return $initCallback=function($container){
     /**********************************************************************/
     /** StaticPage **/
     /**********************************************************************/
@@ -62,13 +55,13 @@ return $init_callback=function($container){
             
             'query_params'=>['active'=>'Y'],
             'init_callback'=>function($item){
-            return [
-                'title'=>$item->extensions['page']->title,
-                'keywords'=>$item->extensions['page']->keywords,
-                'description'=>$item->extensions['page']->description,
-                'route'=>'/moduleAdminPanel/contentPanel/entity-without-section',
-                'route_params'=>['entity_id'=>$item->id]
-            ];
+                return [
+                    'title'=>$item->extensions['page']->title,
+                    'keywords'=>$item->extensions['page']->keywords,
+                    'description'=>$item->extensions['page']->description,
+                    'route'=>'/moduleAdminPanel/contentPanel/entity-without-section',
+                    'route_params'=>['entity_id'=>$item->id]
+                ];
             },
             'content_callback'=>function($item){
             return $item->extensions['page']->detail_text;

@@ -5,10 +5,12 @@ use devskyfly\php56\types\Arr;
 use devskyfly\php56\types\Lgc;
 use devskyfly\php56\types\Str;
 use devskyfly\php56\types\Vrbl;
+use yii\base\BaseObject;
 
-class PageAsset extends ContainerItem
+class PageAsset extends BaseObject;
 {
-    
+    public $hostClient;
+
     public $searchable=true;
     
     public $before_title="";
@@ -103,6 +105,8 @@ class PageAsset extends ContainerItem
            $config['searchable']=$this->searchable;
            $config['linked_object']=$item;
            $config['content_callback']=$content_callback;
+           $config['hostClient']=$this->hostClient;
+           
            $page=new Page($config);
            yield $page;
         }

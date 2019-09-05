@@ -2,48 +2,58 @@
 namespace devskyfly\yiiExtensionSitemap;
 
 use devskyfly\php56\types\Arr;
+use devskyfly\php56\types\Obj;
 use devskyfly\php56\types\Str;
 use devskyfly\php56\types\Vrbl;
 use Yii;
 use yii\base\BaseObject;
-use yii\console\Application;
-use yii\helpers\BaseConsole;
-
-
 
 class Container extends BaseObject
 {
     /**
+     * 
+     * @var callable
+     */
+    public $initCallback=null;
+    
+    /**
+     *
+     * @var HostClient
+     */
+    public $hostClient=null;
+
+    /**
      *
      * @var Page[]
      */
-    protected $pages_list=[];
+    protected $pagesList=[];
     
     /**
      *
      * @var PageAsset[]
      */
-    protected $pages_asset_list=[];
-    
-    
-    /**
-     * 
-     * @var callable
-     */
-    public $init_callback=null;
+    protected $pagesAssetList=[];
     
     public function init()
     {
         parent::init();
+
+        if (!Vrbl::isCallable($this->initCallback)) {
+            throw new SitemapException('Property initCallback is not callable type.'); 
+        }
+
+        if (!Obj::isA($this->hostClient, HostClient::class)) {
+            $this->hostClient = Yii::createObject($this->hostClient);
+        }
     }
     
     public function initLists($callback=null)
     {
         if(Vrbl::isNull($callback)){
-            $callback=$this->init_callback;
+            $callback=$this->initCallback;
         }
         if(!Vrbl::isCallable($callback)){
-            throw new \InvalidArgumentException('Param callback is not callable type.');
+            throw new SitemapException('Param callback is not callable type.');
         }
         $callback($this);
         return $this;
@@ -55,8 +65,8 @@ class Container extends BaseObject
      */
     public function insertPage(Page $item)
     {
-        //if(Arr::keyExists($this->list, $item->route))
-        $this->pages_list[$item->route]=$item;
+        $item->hostClient = $this->hostClient;
+        $this->pagesList[$item->route]=$item;
         return $this;
     }
     
@@ -66,8 +76,7 @@ class Container extends BaseObject
      */
     public function insertPageAsset(PageAsset $item)
     {
-        //if(Arr::keyExists($this->list, $item->route))
-        $this->pages_asset_list[$item->route]=$item;
+        $this->pagesAssetList[$item->route]=$item;
         return $this;
     }
     
@@ -78,11 +87,11 @@ class Container extends BaseObject
      */
     public function removePage($key)
     {
-        if(!Arr::keyExists($this->pages_list, $key)){
+        if(!Arr::keyExists($this->pagesList, $key)){
             throw new \OutOfBoundsException("Key '{$key}' does not exist");
         }
         
-        unset($this->pages_list[$key]);
+        unset($this->pagesList[$key]);
         return $this;
     }
     
@@ -93,11 +102,11 @@ class Container extends BaseObject
      */
     public function removePageAsset($key)
     {
-        if(!Arr::keyExists($this->pages_asset_list, $key)){
+        if(!Arr::keyExists($this->pagesAssetList, $key)){
             throw new \OutOfBoundsException("Key '{$key}' does not exist");
         }
         
-        unset($this->pages_asset_list[$key]);
+        unset($this->pagesAssetList[$key]);
         return $this;
     }
     
@@ -108,7 +117,7 @@ class Container extends BaseObject
      */
     public function getPagesList()
     {
-        $list=$this->pages_list;
+        $list=$this->pagesList;
         
         foreach ($list as $item){
             yield $item;
@@ -121,7 +130,7 @@ class Container extends BaseObject
      */
     public function getPagesAssetList()
     {
-        $list=$this->pages_asset_list;
+        $list=$this->pagesAssetList;
         
         foreach ($list as $item){
             yield $item;
@@ -139,32 +148,12 @@ class Container extends BaseObject
             yield $page;
         }
         
-        $pages_asset_list=$this->getPagesAssetList();
-        foreach ($pages_asset_list as $asset){
+        $pagesAssetList=$this->getPagesAssetList();
+        foreach ($pagesAssetList as $asset){
             $generator=$asset->getPagesList();
             foreach ($generator as $page){
                 yield $page;
             }
-        }
-    }
-    
-    /**
-     * 
-     * @param string $route
-     * @throws \InvalidArgumentException
-     * @return Page|null
-     */
-    public function getPageByRoute($route)
-    {
-        if(!Str::isString($route)){
-            throw new \InvalidArgumentException('Param $route is not string type.');
-        }
-        
-        if(Arr::keyExists($this->pages_list, $route))
-        {
-            return $this->pages_list[$route];
-        }else{
-            return null;
         }
     }
 }

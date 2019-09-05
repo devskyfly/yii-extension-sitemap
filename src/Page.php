@@ -1,25 +1,18 @@
 <?php
 namespace devskyfly\yiiExtensionSitemap;
 
-use PHPHtmlParser\Dom;
+use Yii;
+use yii\base\BaseObject;
 use devskyfly\php56\types\Arr;
 use devskyfly\php56\types\Lgc;
 use devskyfly\php56\types\Str;
 use devskyfly\php56\types\Vrbl;
-use Yii;
-use yii\base\BaseObject;
-use yii\helpers\Url;
-use yii\httpclient\Client;
-use yii\httpclient\Exception;
-use yii\helpers\ArrayHelper;
-use yii\httpclient\Request;
-use yii\helpers\BaseConsole;
 
-
-class Page extends ContainerItem
+class Page extends BaseObject
 {
+    public $hostClient;
+
     public $searchable=true;
-    
     public $data_time;
     
     public $title;
@@ -70,42 +63,14 @@ class Page extends ContainerItem
         }
     }
     
-    /**
-     * 
-     * @param Request $request
-     * @return string
-     */
-    public function getContent(Request $request=null)
+    public function getContent()
     {
         $content_callback=$this->content_callback;
-        if(!Vrbl::isCallable($content_callback)){
-            
-            if(Vrbl::isNull($request)){
-                $request=(new Client())->createRequest();
-            }
-            
-            $oldControllerNamespace=Yii::$app->controllerNamespace;
-            Yii::$app->controllerNamespace='@frontend/controllers';
-            
-            $route=ArrayHelper::merge([$this->route], $this->route_params);
-            $url=Url::toRoute($route);
-            
-            $request
-            ->setUrl(Url::toRoute($route));
-            $response=$request->send();
-            
-            if($response->statusCode!=200){
-                throw new Exception("Status code is not 200.");
-            }
-            
-            $data=$response->content;
-            $dom= new Dom();
-            $data=$dom->loadStr($data,[])->find($this->wrapper_tag)[0];
-            
-            Yii::$app->controllerNamespace=$oldControllerNamespace;
-            return $data->__toString();
-        }else{
-            $callback=$this->content_callback;
+        
+        if (!Vrbl::isCallable($content_callback)) {
+            $this->client->getText([$this->route, $this->route_params], $this->wrapper_tag);
+        } else {
+            $callback = $this->content_callback;
             return $callback($this->linked_object);
         }
 

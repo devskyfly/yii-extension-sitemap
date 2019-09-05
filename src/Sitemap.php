@@ -1,13 +1,10 @@
 <?php
 namespace devskyfly\yiiExtensionSitemap;
 
-use devskyfly\php56\libs\fileSystem\Dirs;
-use devskyfly\php56\types\Vrbl;
 use Yii;
+use devskyfly\php56\libs\fileSystem\Dirs;
 use yii\base\BaseObject;
-use yii\base\InvalidArgumentException;
-use yii\httpclient\Request;
-use yii\httpclient\Client;
+
 use devskyfly\php56\types\Obj;
 
 class Sitemap extends BaseObject
@@ -16,56 +13,21 @@ class Sitemap extends BaseObject
      *
      * @var string
      */
-    public $sitemap_path='@frontend/web';
+    public $path='@frontend/web';
     
     /**
      * 
      * @var Container
      */
-    public $container=null;
-    
-    /**
-     *
-     * @var callable
-     */
-    public $container_init_callback=null;
-    
-    
+    public $container = null;
+
     public function init()
     {
         parent::init();
-        
-        if(Vrbl::isNull($this->container)){
-            $this->container=new Container();
-        }else{
-            if(!Obj::isA($this->container, Container::class)){
-                throw new \InvalidArgumentException('Property $container is not '.Container::class.' class.');
-            }
+        if (!(Obj::isA($this->container, Container::class))) {
+            $this->container = Yii::createObject($this->container);
         }
-        
-        $this->checkSiteMapPath();
-    }
-    
-    public function initContainer()
-    {
-        if(!Vrbl::isCallable($this->container_init_callback)){
-           throw new \InvalidArgumentException(); 
-        }
-        $this->container->initLists($this->container_init_callback);
-        return $this;
-    }
-
-    /**
-     * @todo Nead to realize
-     */
-    public function generateXml()
-    {
-       /*  
-        $generator=$this->container->getPages();
-        foreach ($generator as $item){
-            
-        }
-        */
+        $this->initPath();
     }
     
     /**
@@ -73,16 +35,20 @@ class Sitemap extends BaseObject
      * @throws yii\base\InvalidArgumentException
      * @return boolean
      */
-    protected function checkSiteMapPath()
+    protected function initPath()
     {
-        try {
-        $path=Yii::getAlias($this->sitemap_path);
-        }catch (InvalidArgumentException $e){
-            if(strpos($this->sitemap_path,'@frontend/web')!==false){
-                $this->sitemap_path='@app/web';
-                $path=Yii::getAlias($this->sitemap_path);
-            }
+        $path = Yii::getAlias($this->path);
+        
+        if (!Dirs::dirExists($path)) {
+            throw new SitemapException("Path '{$path}' does not exist.");
         }
-        return Dirs::dirExists($path);
     }
+
+    public function generate()
+    {
+        $pages = $this->container->getAllPages();
+        foreach ($pages as $page) {
+            
+        }
+    }    
 }
