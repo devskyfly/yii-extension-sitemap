@@ -10,24 +10,25 @@ use devskyfly\php56\types\Vrbl;
 
 class Page extends BaseObject
 {
-    public $hostClient;
-
-    public $searchable=true;
-    public $data_time;
+    public $searchable = true;
+    public $data_time = "";
     
-    public $title;
-    public $keywords;
-    public $description;
+    public $title = "";
+    public $keywords = "";
+    public $description = "";
     
-    public $route;
+    public $route = "";
     public $route_params=[];
     
-    public $class="";
-    public $content_callback=null;
-    public $wrapper_tag="main";
+    public $class = "";
     
-    public $linked_object;
+    public $content = "";
+    public $wrapper_tag = "main";
     
+    public $linked_object =null;
+    public $callback = null;
+    
+
     public function init()
     {
         if(!Str::isString($this->title)){
@@ -62,17 +63,51 @@ class Page extends BaseObject
             throw new \InvalidArgumentException('Property $route_params is not array type.');
         }
     }
-    
-    public function getContent()
+
+    public function fill()
     {
-        $content_callback=$this->content_callback;
+        $linkedObject = $this->linked_object;
+        $callback=$this->callback;
         
-        if (!Vrbl::isCallable($content_callback)) {
-            $this->client->getText([$this->route, $this->route_params], $this->wrapper_tag);
+        if (Vrbl::isNull($linkedObject)) {
+            $page = $this->client->getText([$this->route, $this->route_params], $this->wrapper_tag);
+
+            $dom = new Dom();
+            $dom->loadStr($page, []);
+
+            $content = $dom->find($this->wrapper_tag);
+            $content = ArrayHelper::getValue($content, 0, null);
+
+            $title = $dom->find("title");
+            $title = ArrayHelper::getValue($title, 0, null);
+
+            $keywords = $dom->find("meta[name='keywords']");
+            $keywords = ArrayHelper::getValue($keywords, 0, null);
+
+            $description = $dom->find("meta[name='description']");
+            $description = ArrayHelper::getValue($description, 0, null);
+
+            $this->data_time = (new \DateTime())->format(\DateTime::ATOM);
+            
+            if ($title) {
+                $this->title = $title->text;
+            }
+
+            if ($keywords) {
+                $this->keywords = $description->getAttribute('keywords');
+            }
+
+            if ($description) {
+                $this->description = $description->getAttribute('content');
+            }
+
+            if ($content) {
+                $this->content = $content->text;
+            }            
         } else {
-            $callback = $this->content_callback;
             return $callback($this->linked_object);
         }
 
+        return $this;
     }
 }

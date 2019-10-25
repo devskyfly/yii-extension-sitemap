@@ -4,7 +4,6 @@ namespace devskyfly\yiiExtensionSitemap;
 use Yii;
 use devskyfly\php56\libs\fileSystem\Dirs;
 use yii\base\BaseObject;
-
 use devskyfly\php56\types\Obj;
 
 class Sitemap extends BaseObject
