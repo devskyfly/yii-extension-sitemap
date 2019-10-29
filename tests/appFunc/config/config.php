@@ -11,28 +11,23 @@ return [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
-        '@tests' => dirname(__DIR__)
+        '@app' => dirname(__DIR__)
     ],
     'language' => 'en-US',
-    'controllerNamespace'=>'tests\\app\\controllers',
+    'controllerNamespace'=>'app\\controllers',
+    //'controllerPath'=>
     'components' => [
-        //'db' => $db,
-        /*'mailer' => [
-            'useFileTransport' => true,
-        ],*/
         'sitemap'=>[
             'class'=>'devskyfly\yiiExtensionSitemap\Sitemap',
-            'path'=> __DIR__.'/../../tmp',
+            'path'=> __DIR__.'/../web',
             'container'=>[
                 'class'=>'devskyfly\yiiExtensionSitemap\Container',
                 'hostClient'=>[
                     'class'=>'devskyfly\yiiExtensionSitemap\HostClient',
-                    'origin'=>'',
+                    'origin'=>'http://localhost:3000',
                     'proxy'=>'',
                 ],
-                'initCallback' => function ($container) {
-
-                }
+                'initCallback' => require __DIR__.'/sitemap/container-init-callback.php'
             ]
         ],
         'urlManager' => [

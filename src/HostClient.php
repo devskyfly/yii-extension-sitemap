@@ -19,12 +19,9 @@ class HostClient extends BaseObject
         $this->client = new Client();
     }
 
-    public function getPageContent($route, $wrapTag = null)
+    public function getPageContent($url)
     {
-        $oldControllerNamespace=Yii::$app->controllerNamespace;
-        Yii::$app->controllerNamespace='@frontend/controllers';
-        $url=$this->origin.Url::toRoute($route);
-        Yii::$app->controllerNamespace=$oldControllerNamespace;
+        $url = $this->origin."/".$url;
         $request = $this->client->createRequest()
         ->setMethod('GET')
         ->setUrl($url);
@@ -35,14 +32,6 @@ class HostClient extends BaseObject
         
         $response = $request->send();
         $data = $response->content;
-
-        if (!$wrapTag) {
-            $dom = new Dom();
-            $data = $dom->loadStr($data, [])->find($wrapTag)[0];
-            return $data->__toString();
-        }else{
-
-            return $data;
-        }
+        return $data;
     }
 }

@@ -14,7 +14,8 @@ class HostClientCest
     public function tryToTest(UnitTester $I)
     {
         $client = Stub::makeEmpty(Client::class);
-        $hostclient = new HostClient(["origin"=>"http://ipa.iitrust.ru", "client"=>$client]);
+        $hostclient = new HostClient(["origin"=>"http://localhost", "client"=>$client]);
         $hostclient->getPageContent('site/index');
     }
 }
+l

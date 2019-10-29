@@ -1,12 +1,13 @@
 <?php
 namespace devskyfly\yiiExtensionSitemap;
 
-use Yii;
-use yii\base\BaseObject;
 use devskyfly\php56\types\Arr;
+use yii\base\BaseObject;
 use devskyfly\php56\types\Lgc;
 use devskyfly\php56\types\Str;
 use devskyfly\php56\types\Vrbl;
+use PHPHtmlParser\Dom;
+use yii\helpers\ArrayHelper;
 
 class Page extends BaseObject
 {
@@ -17,8 +18,7 @@ class Page extends BaseObject
     public $keywords = "";
     public $description = "";
     
-    public $route = "";
-    public $route_params=[];
+    public $url = "";
     
     public $class = "";
     
@@ -28,6 +28,7 @@ class Page extends BaseObject
     public $linked_object =null;
     public $callback = null;
     
+    public $container = null;
 
     public function init()
     {
@@ -43,7 +44,7 @@ class Page extends BaseObject
             throw new \InvalidArgumentException('Property $description is not string type.');
         }
         
-        if(!Str::isString($this->route)){
+        if(!Str::isString($this->url)){
             throw new \InvalidArgumentException('Property $route is not string type.');
         }
         
@@ -59,9 +60,6 @@ class Page extends BaseObject
             throw new \InvalidArgumentException('Property $class is not string type.');
         }
         
-        if(!Arr::isArray($this->route_params)){
-            throw new \InvalidArgumentException('Property $route_params is not array type.');
-        }
     }
 
     public function fill()
@@ -70,23 +68,13 @@ class Page extends BaseObject
         $callback=$this->callback;
         
         if (Vrbl::isNull($linkedObject)) {
-            $page = $this->client->getText([$this->route, $this->route_params], $this->wrapper_tag);
-
+            $page = $this->container->hostClient->getPageContent($this->url);
             $dom = new Dom();
             $dom->loadStr($page, []);
-
-            $content = $dom->find($this->wrapper_tag);
-            $content = ArrayHelper::getValue($content, 0, null);
-
-            $title = $dom->find("title");
-            $title = ArrayHelper::getValue($title, 0, null);
-
-            $keywords = $dom->find("meta[name='keywords']");
-            $keywords = ArrayHelper::getValue($keywords, 0, null);
-
-            $description = $dom->find("meta[name='description']");
-            $description = ArrayHelper::getValue($description, 0, null);
-
+            $content = $dom->find($this->wrapper_tag)[0];
+            $title = $dom->find("title")[0];
+            $keywords = $dom->find("meta[name='keywords']")[0];
+            $description = $dom->find("meta[name='description']")[0];
             $this->data_time = (new \DateTime())->format(\DateTime::ATOM);
             
             if ($title) {
@@ -94,13 +82,13 @@ class Page extends BaseObject
             }
 
             if ($keywords) {
-                $this->keywords = $description->getAttribute('keywords');
+                $this->keywords = $keywords->getAttribute('content');
             }
 
             if ($description) {
                 $this->description = $description->getAttribute('content');
             }
-
+            
             if ($content) {
                 $this->content = $content->text;
             }            

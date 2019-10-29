@@ -47,7 +47,7 @@ class Container extends BaseObject
         }
     }
     
-    public function initLists($callback=null)
+    protected function initLists($callback=null)
     {
         if(Vrbl::isNull($callback)){
             $callback=$this->initCallback;
@@ -65,8 +65,8 @@ class Container extends BaseObject
      */
     public function insertPage(Page $item)
     {
-        $item->hostClient = $this->hostClient;
-        $this->pagesList[$item->route]=$item;
+        $item->container = $this;
+        $this->pagesList[$item->url]=$item;
         return $this;
     }
     
@@ -76,7 +76,7 @@ class Container extends BaseObject
      */
     public function insertPageAsset(PageAsset $item)
     {
-        $this->pagesAssetList[$item->route]=$item;
+        $this->pagesAssetList[$item->url]=$item;
         return $this;
     }
     
@@ -142,6 +142,7 @@ class Container extends BaseObject
      */
     public function getAllPages()
     {
+        $this->initLists();
         $generator=$this->getPagesList();
         
         foreach ($generator as $page){

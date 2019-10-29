@@ -5,34 +5,24 @@
 /**
  * Application configuration shared by all test types
  */
+
+use yii\web\Controller;
+
 return [
     'id' => 'basic-tests',
     'basePath' => dirname(__DIR__),
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm'   => '@vendor/npm-asset'
     ],
     'language' => 'en-US',
     'components' => [
-        //'db' => $db,
-        /*'mailer' => [
-            'useFileTransport' => true,
-        ],*/
-        
         'urlManager' => [
             'showScriptName' => true,
         ],
-        
         'request' => [
             'cookieValidationKey' => 'test',
             'enableCsrfValidation' => false,
-            // but if you absolutely need it set cookie domain to localhost
-            /*
-            'csrfCookie' => [
-                'domain' => 'localhost',
-            ],
-            */
         ],
     ],
-    //'params' => $params,
 ];
