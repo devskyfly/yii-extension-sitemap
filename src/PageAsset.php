@@ -3,34 +3,39 @@ namespace devskyfly\yiiExtensionSitemap;
 
 use devskyfly\php56\types\Arr;
 use devskyfly\php56\types\Lgc;
+use devskyfly\php56\types\Obj;
 use devskyfly\php56\types\Str;
 use devskyfly\php56\types\Vrbl;
 use yii\base\BaseObject;
 
-class PageAsset extends BaseObject;
+class PageAsset extends BaseObject
 {
     public $hostClient;
 
-    public $searchable=true;
+    public $searchable = true;
     
-    public $before_title="";
-    public $before_keywords="";
-    public $before_description="";
+    public $before_title = "";
+    public $before_keywords = "";
+    public $before_description = "";
     
-    public $after_title="";
-    public $after_keywords="";
-    public $after_description="";
+    public $after_title = "";
+    public $after_keywords = "";
+    public $after_description = "";
     
-    public $class="";
-    public $route="";
-    public $query_params=[];
-    public $init_callback=null;
-    public $content_callback=null;
-    public $wrapper_tag="main";
+    public $entity_class = "";
+    public $route = "";
+    public $query_params = [];
+    
+    public $item_callback = null;
+    public $wrapper_tag = "main";
+
+    public $container = null;
 
     
     public function init()
     {
+        parent::init();
+
         if(!Str::isString($this->before_title)){
             throw new \InvalidArgumentException('Property $before_title  is not string type.');
         }
@@ -63,21 +68,21 @@ class PageAsset extends BaseObject;
             throw new \InvalidArgumentException('Property $searchable is not boolean type.');
         }
         
-        if(!Str::isString($this->class)){
-            throw new \InvalidArgumentException('Property $class is not string type.');
+        if(!Str::isString($this->entity_class)){
+            throw new \InvalidArgumentException('Property $entity_class is not string type.');
         }
         
         if(!Arr::isArray($this->query_params)){
             throw new \InvalidArgumentException('Property $query_params is not array type.');
         }
         
-        if(!Vrbl::isCallable($this->content_callback)){
-            throw new \InvalidArgumentException('Property $content_callback is not callable type.');
-        }
+        /*if(!Vrbl::isCallable($this->item_callback)){
+            throw new \InvalidArgumentException('Property $item_callback is not callable type.');
+        }*/
         
-        if(!Vrbl::isCallable($this->init_callback)){
+        /*if(!Vrbl::isCallable($this->init_callback)){
             throw new \InvalidArgumentException('Property $init_callback is not callable type.');
-        }
+        }*/
         
         if(!Str::isString($this->wrapper_tag)){
             throw new \InvalidArgumentException('Property $wrapper_tag is not string type.');
@@ -90,24 +95,19 @@ class PageAsset extends BaseObject;
      */
     public function getPagesList()
     {
-        $init_callback=$this->init_callback;
-        $cls=$this->class;
+        //$init_callback=$this->init_callback;
+        $cls=$this->entity_class;
         $query=$cls::find()->where($this->query_params);
+        $item_callback=$this->item_callback;
         foreach ($query->each(10) as $item)
         {
-           $content_callback=$this->content_callback;
-           $config=$init_callback($item);
-           
-           $config['title']=$this->before_title.$config['title'].$this->after_title;
-           $config['keywords']=$this->before_keywords.$config['keywords'].$this->after_keywords;
-           $config['description']=$this->before_description.$config['description'].$this->after_description;
            
            $config['searchable']=$this->searchable;
            $config['linked_object']=$item;
-           $config['content_callback']=$content_callback;
-           $config['hostClient']=$this->hostClient;
+           $config['callback']=$item_callback;
+           $config['container']=$this->container;
            
-           $page=new Page($config);
+           $page = new Page($config);
            yield $page;
         }
     }

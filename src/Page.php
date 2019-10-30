@@ -1,13 +1,11 @@
 <?php
 namespace devskyfly\yiiExtensionSitemap;
 
-use devskyfly\php56\types\Arr;
 use yii\base\BaseObject;
 use devskyfly\php56\types\Lgc;
 use devskyfly\php56\types\Str;
 use devskyfly\php56\types\Vrbl;
 use PHPHtmlParser\Dom;
-use yii\helpers\ArrayHelper;
 
 class Page extends BaseObject
 {
@@ -29,6 +27,7 @@ class Page extends BaseObject
     public $callback = null;
     
     public $container = null;
+    public $asset = null;
 
     public function init()
     {
@@ -71,6 +70,7 @@ class Page extends BaseObject
             $page = $this->container->hostClient->getPageContent($this->url);
             $dom = new Dom();
             $dom->loadStr($page, []);
+            
             $content = $dom->find($this->wrapper_tag)[0];
             $title = $dom->find("title")[0];
             $keywords = $dom->find("meta[name='keywords']")[0];
@@ -93,9 +93,20 @@ class Page extends BaseObject
                 $this->content = $content->text;
             }            
         } else {
-            return $callback($this->linked_object);
+            $callback($this);
+            
         }
 
+        return $this;
+    }
+
+    protected function implemetAsset($asset)
+    {
+        if (!Vrbl::isNull($asset)) {
+           $this['title'] = $asset->before_title.$config['title'].$asset->after_title;
+           $this['keywords'] = $asset->before_keywords.$config['keywords'].$asset->after_keywords;
+           $this['description'] = $asset->before_description.$config['description'].$this->after_description;
+        }
         return $this;
     }
 }

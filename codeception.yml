@@ -12,4 +12,5 @@ settings:
 modules:
     config:
         Yii2:
+            part: [orm, fixtures]
             configFile: 'tests/appFunc/config/config.php'

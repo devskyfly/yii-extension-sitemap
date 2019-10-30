@@ -47,16 +47,35 @@ class Container extends BaseObject
         }
     }
     
-    protected function initLists($callback=null)
+    /**
+     * 
+     * @return Generator
+     */
+    public function getAllPages()
     {
-        if(Vrbl::isNull($callback)){
-            $callback=$this->initCallback;
+        $this->reset();
+        $this->initLists();
+        $generator = $this->getPagesList();
+        
+        foreach ($generator as $page){
+            $page->fill();
+            yield $page;
         }
-        if(!Vrbl::isCallable($callback)){
-            throw new SitemapException('Param callback is not callable type.');
+        
+        $pagesAssetList = $this->getPagesAssetList();
+        foreach ($pagesAssetList as $asset){
+            $generator = $asset->getPagesList();
+            foreach ($generator as $page){
+                $page->fill();
+                yield $page;
+            }
         }
-        $callback($this);
-        return $this;
+    }
+
+    public function reset()
+    {
+        $this->pagesList = [];
+        $this->pagesAssetList = [];
     }
     
     /**
@@ -66,7 +85,7 @@ class Container extends BaseObject
     public function insertPage(Page $item)
     {
         $item->container = $this;
-        $this->pagesList[$item->url]=$item;
+        $this->pagesList[] = $item;
         return $this;
     }
     
@@ -76,46 +95,30 @@ class Container extends BaseObject
      */
     public function insertPageAsset(PageAsset $item)
     {
-        $this->pagesAssetList[$item->url]=$item;
+        $item->container = $this;
+        $this->pagesAssetList[] = $item;
         return $this;
     }
     
-    /**
-     * 
-     * @param string $key
-     * @throws \OutOfBoundsException
-     */
-    public function removePage($key)
+    protected function initLists($callback=null)
     {
-        if(!Arr::keyExists($this->pagesList, $key)){
-            throw new \OutOfBoundsException("Key '{$key}' does not exist");
+        if (Vrbl::isNull($callback)) {
+            $callback=$this->initCallback;
         }
-        
-        unset($this->pagesList[$key]);
+
+        if (!Vrbl::isCallable($callback)) {
+            throw new SitemapException('Param callback is not callable type.');
+        }
+
+        $callback($this);
         return $this;
     }
-    
-    /**
-     *
-     * @param string $key
-     * @throws \OutOfBoundsException
-     */
-    public function removePageAsset($key)
-    {
-        if(!Arr::keyExists($this->pagesAssetList, $key)){
-            throw new \OutOfBoundsException("Key '{$key}' does not exist");
-        }
-        
-        unset($this->pagesAssetList[$key]);
-        return $this;
-    }
-    
-    
+
     /**
      *
      * @return Generator
      */
-    public function getPagesList()
+    protected function getPagesList()
     {
         $list=$this->pagesList;
         
@@ -128,33 +131,12 @@ class Container extends BaseObject
      * 
      * @return Generator
      */
-    public function getPagesAssetList()
+    protected function getPagesAssetList()
     {
         $list=$this->pagesAssetList;
         
         foreach ($list as $item){
             yield $item;
-        }
-    }
-    /**
-     * 
-     * @return Generator
-     */
-    public function getAllPages()
-    {
-        $this->initLists();
-        $generator=$this->getPagesList();
-        
-        foreach ($generator as $page){
-            yield $page;
-        }
-        
-        $pagesAssetList=$this->getPagesAssetList();
-        foreach ($pagesAssetList as $asset){
-            $generator=$asset->getPagesList();
-            foreach ($generator as $page){
-                yield $page;
-            }
         }
     }
 }
