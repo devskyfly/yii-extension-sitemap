@@ -9,7 +9,7 @@ use app\models\Article;
 
 use function PHPSTORM_META\type;
 
-class SitemapCest
+class ExtensionCest
 {
     public function _before(FunctionalTester $I)
     {
@@ -64,8 +64,10 @@ class SitemapCest
                 $I->assertEquals($item->keywords, $mock['keywords']);
                 $pages_itr++;
             } else {
-                $I->assertEquals($articles[$pages_assets_itr]['name'], $item->title);
+                $I->assertEquals("bt ".$articles[$pages_assets_itr]['name']." at", $item->title);
                 $I->assertEquals($articles[$pages_assets_itr]['content'], $item->content);
+                $I->assertEquals("bk ".$articles[$pages_assets_itr]['keywords']." ak", $item->keywords);
+                $I->assertEquals("bd ".$articles[$pages_assets_itr]['description']." ad", $item->description);
                 
                 $pages_assets_itr++;
             }

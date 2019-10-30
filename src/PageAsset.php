@@ -101,12 +101,11 @@ class PageAsset extends BaseObject
         $item_callback=$this->item_callback;
         foreach ($query->each(10) as $item)
         {
-           
            $config['searchable']=$this->searchable;
            $config['linked_object']=$item;
            $config['callback']=$item_callback;
            $config['container']=$this->container;
-           
+           $config['asset'] = $this;
            $page = new Page($config);
            yield $page;
         }

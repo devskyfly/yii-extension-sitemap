@@ -3,6 +3,7 @@ namespace devskyfly\yiiExtensionSitemap;
 
 use yii\base\BaseObject;
 use devskyfly\php56\types\Lgc;
+use devskyfly\php56\types\Obj;
 use devskyfly\php56\types\Str;
 use devskyfly\php56\types\Vrbl;
 use PHPHtmlParser\Dom;
@@ -94,7 +95,7 @@ class Page extends BaseObject
             }            
         } else {
             $callback($this);
-            
+            $this->implemetAsset($this->asset);
         }
 
         return $this;
@@ -102,10 +103,10 @@ class Page extends BaseObject
 
     protected function implemetAsset($asset)
     {
-        if (!Vrbl::isNull($asset)) {
-           $this['title'] = $asset->before_title.$config['title'].$asset->after_title;
-           $this['keywords'] = $asset->before_keywords.$config['keywords'].$asset->after_keywords;
-           $this['description'] = $asset->before_description.$config['description'].$this->after_description;
+        if (Obj::isA($asset, PageAsset::class)) {
+           $this->title = $asset->before_title." ".$this->title." ".$asset->after_title;
+           $this->keywords = $asset->before_keywords." ".$this->keywords." ".$asset->after_keywords;
+           $this->description = $asset->before_description." ".$this->description." ".$asset->after_description;
         }
         return $this;
     }
