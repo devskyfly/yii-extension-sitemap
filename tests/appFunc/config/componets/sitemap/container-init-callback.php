@@ -4,6 +4,7 @@ use app\models\Article;
 use devskyfly\yiiExtensionSitemap\Container;
 use devskyfly\yiiExtensionSitemap\Page;
 use devskyfly\yiiExtensionSitemap\PageAsset;
+use yii\helpers\Url;
 
 return function(Container $container)
 {
@@ -15,6 +16,7 @@ return function(Container $container)
         $page->content = $page->linked_object->content;
         $page->keywords = $page->linked_object->keywords;
         $page->description = $page->linked_object->description;
+        
     };
 
     $config = [
@@ -29,8 +31,6 @@ return function(Container $container)
         'query_params'=>[]
     ];
 
-    $asset = new PageAsset($config);
-
-    $container->insertPageAsset(new PageAsset($asset));
+    $container->insertPageAsset(new PageAsset($config));
 
 };
