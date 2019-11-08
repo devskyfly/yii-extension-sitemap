@@ -5,8 +5,11 @@ use Yii;
 use devskyfly\php56\libs\fileSystem\Dirs;
 use yii\base\BaseObject;
 use devskyfly\php56\types\Obj;
+use devskyfly\yiiExtensionSitemap\console\SitemapController;
+use yii\base\BootstrapInterface;
+use yii\console\Application as ConsoleApplication;
 
-class Sitemap extends BaseObject
+class Sitemap extends BaseObject implements BootstrapInterface
 {
     /**
      *
@@ -27,6 +30,13 @@ class Sitemap extends BaseObject
             $this->container = Yii::createObject($this->container);
         }
         $this->initPath();
+    }
+
+    public function bootstrap($app)
+    {
+        if ($app instanceof ConsoleApplication) {
+            $app->controllerMap['sitemap'] = ["class" => SitemapController::class];
+        }
     }
     
     /**

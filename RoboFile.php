@@ -6,17 +6,26 @@
  */
 class RoboFile extends \Robo\Tasks
 {
-    function runPhpServers()
+    public function testsUnit()
     {
-        $task = $this->taskServer(3000)
-        ->dir(__DIR__.'/tests/appFunc/web')
-        //->background()
-        ->run();
+        $task = $this->taskExec(__DIR__.'/vendor/bin/codecept run unit')->run();
     }
 
-    function runFunctionalTests()
+    public function testsFunctional($opts = ['server|s' => false])
     {
+        if ($opts['server']) {
+            $this->serverRun();
+        }
         $task = $this->taskExec(__DIR__.'/vendor/bin/codecept run functional')->run();
     }
 
+    public function testsAcceptence()
+    {
+        $task = $this->taskExec(__DIR__.'/vendor/bin/codecept run unit')->run();
+    }
+
+    public function serverRun($dir = 'tests/appFunc/web', $port = 3000)
+    {
+        $this->taskServer($port)->dir($dir)->background()->run();
+    }
 }
