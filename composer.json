@@ -20,9 +20,6 @@
 			"devskyfly\\yiiExtensionSitemap\\" : "src"
 		}
 	},
-	"extra": {
-        "bootstrap": "devskyfly\\yiiExtensionSitemap\\Sitemap"
-    },
 	"require-dev": {
 		"codeception/codeception": "^3.1",
 		"consolidation/robo": "^1.0.0"
