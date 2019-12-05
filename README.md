@@ -1,6 +1,6 @@
 ## Расширение Sitemap
 
-### Конфигурация common
+### Конфигурация
 
 ```php 
 //Компонент
@@ -14,7 +14,7 @@ return [
             'initCallback'=>require_once __DIR__.'/sitemap-callback.php'
         ],
     ]
-]
+];
 ```
 
 ### Инициализация sitemap-callback.php
@@ -24,12 +24,12 @@ use app\models\moduleAdminPanel\contentPanel\entityWithoutSection\EntityWithoutS
 use devskyfly\yiiExtensionSitemap\Page;
 use devskyfly\yiiExtensionSitemap\PageAsset;
 
-return $initCallback=function($container){
+return $initCallback = function($container){
 
     /**********************************************************************/
     /** StaticPage **/
     /**********************************************************************/
-    
+        
     $pages=[
         [
             'title'=>'Index',
@@ -38,23 +38,23 @@ return $initCallback=function($container){
             'route'=>'site/index'
         ],
     ];
-    
+
     foreach ($pages as $page_config)
     {
-        $page=new Page($page_config);
+        $page = new Page($page_config);
         $container->insertPage($page);
     }
-    
+        
     /**********************************************************************/
     /** DinamicPages **/
     /**********************************************************************/
-    
-    $pages_asserts=[
+
+    $pages_asserts = [
         [
-            'class'=>EntityWithoutSection::class,
-            'route'=>'site/index',
-            'query_params'=>['active'=>'Y'],
-            'init_callback'=>function($item){
+            'class' => EntityWithoutSection::class,
+            'route' => 'site/index',
+            'query_params' => ['active' => 'Y'],
+            'init_callback' => function($item){
                 return [
                     'title' => $item->extensions['page']->title,
                     'keywords' => $item->extensions['page']->keywords,
@@ -68,12 +68,12 @@ return $initCallback=function($container){
             }
         ],
     ];
-    
-    foreach ($pages_asserts as $page_config)
-    {
+
+    foreach ($pages_asserts as $page_config) {
         $page_asset = new PageAsset($page_config);
         $container->insertPageAsset($page_asset);
     }
+
 };
 ```
 

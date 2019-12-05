@@ -1,9 +1,7 @@
 <?php
 namespace devskyfly\yiiExtensionSitemap;
 
-use devskyfly\php56\types\Arr;
 use devskyfly\php56\types\Obj;
-use devskyfly\php56\types\Str;
 use devskyfly\php56\types\Vrbl;
 use Yii;
 use yii\base\BaseObject;
@@ -48,6 +46,9 @@ class Container extends BaseObject
     }
     
     /**
+     * Execute summary pagesList and pagesAssetList and invoke Page::fill().
+     * 
+     * It return Page item of collection.
      * 
      * @return Generator
      */
@@ -72,6 +73,11 @@ class Container extends BaseObject
         }
     }
 
+    /**
+     * Clear pages and pages assets arrays.
+     *
+     * @return void
+     */
     public function reset()
     {
         $this->pagesList = [];
@@ -100,10 +106,16 @@ class Container extends BaseObject
         return $this;
     }
     
+    /**
+     * Invoke callback to set pages and pages_asset.
+     *
+     * @param [callable|null] $callback
+     * @return void
+     */
     protected function initLists($callback = null)
     {
         if (Vrbl::isNull($callback)) {
-            $callback=$this->initCallback;
+            $callback = $this->initCallback;
         }
 
         if (!Vrbl::isCallable($callback)) {

@@ -4,19 +4,17 @@ use app\models\Article;
 use devskyfly\yiiExtensionSitemap\Container;
 use devskyfly\yiiExtensionSitemap\Page;
 use devskyfly\yiiExtensionSitemap\PageAsset;
-use yii\helpers\Url;
 
 return function(Container $container)
 {
-    $container->insertPage(new Page(['url'=>'?r=site/index']));
-    $container->insertPage(new Page(['url'=>'?r=site/about']));
+    $container->insertPage(new Page(['url'=>'?r=site/index', 'priority' => 1]));
+    $container->insertPage(new Page(['url'=>'?r=site/about', 'priority' => 0.8]));
 
     $item_callback = function (Page $page) {
         $page->title = $page->linked_object->name;
         $page->content = $page->linked_object->content;
         $page->keywords = $page->linked_object->keywords;
         $page->description = $page->linked_object->description;
-        
     };
 
     $config = [

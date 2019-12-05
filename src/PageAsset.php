@@ -96,15 +96,15 @@ class PageAsset extends BaseObject
     public function getPagesList()
     {
         //$init_callback=$this->init_callback;
-        $cls=$this->entity_class;
-        $query=$cls::find()->where($this->query_params);
-        $item_callback=$this->item_callback;
-        foreach ($query->each(10) as $item)
-        {
-           $config['searchable']=$this->searchable;
-           $config['linked_object']=$item;
-           $config['callback']=$item_callback;
-           $config['container']=$this->container;
+        $cls = $this->entity_class;
+        $query = $cls::find()->where($this->query_params);
+        $item_callback = $this->item_callback;
+        
+        foreach ($query->each(10) as $item) {
+           $config['searchable'] = $this->searchable;
+           $config['linked_object'] = $item;
+           $config['callback'] = $item_callback;
+           $config['container'] = $this->container;
            $config['asset'] = $this;
            $page = new Page($config);
            yield $page;

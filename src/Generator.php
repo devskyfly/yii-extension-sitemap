@@ -5,7 +5,6 @@ namespace devskyfly\yiiExtensionSitemap;
 use devskyfly\php56\libs\fileSystem\Dirs;
 use devskyfly\php56\types\Nmbr;
 use devskyfly\php56\types\Str;
-use Exception;
 use yii\base\BaseObject;
 
 /**
@@ -29,18 +28,12 @@ class Generator extends BaseObject
      * @var integer
      */
     public $itemsInFile = 10000;
+
     /**
      *
      * @var string
      */
-    private  $_fileName = "sitemap.xml";
-
-    /**
-     *
-     * @var array
-     */
-    private $_fileProps = [];
-
+    public  $fileName = "sitemap.xml";
 
     public function init()
     {
@@ -56,53 +49,13 @@ class Generator extends BaseObject
             throw new SitemapException("Directory '{$this->path}' does not exist.");
         }
 
+        if (!Str::isString($this->fileName)) {
+            throw new SitemapException("Property fileName is not string type.");
+        }
+
         if (!Nmbr::isInteger($this->itemsInFile)) {
             throw new SitemapException('Property $itemsInFile is not integer type.');
         }
-
-        $this->setFileName($this->_fileName);
-    }
-
-    /****************************
-     * Define getters and setters
-     */
-
-    public function setFileProps()
-    {
-        $this->_fileProps = explode(".", $this->fileName);
-        
-        if (count($this->fileProps) != 2) {
-            throw new SitemapException("File props size is not equal to 2.");
-        }
-
-        if ($this->fileProps[1] !== "xml") {
-            throw new Sitemap("File extension is not 'xml'.");
-        }
-        return $this;
-    }
-
-    public function getFileProps()
-    {
-        return $this->_fileProps;
-    }
-
-    public function setFileName($value)
-    {
-        
-        $this->_fileName = $value;
-        
-        if (!Str::isString($this->_fileName)) {
-            throw new SitemapException("Property _fileName is not string type.");
-        }
-        
-        $this->setFileProps();
-
-        return $this;
-    }
-
-    public function getFileName()
-    {
-        return $this->_fileName;
     }
 
     /**
@@ -111,25 +64,34 @@ class Generator extends BaseObject
 
     public function generate()
     {
-        $fileProps = $this->getFileProps();
+        $fileProps = explode(".", $this->fileName);
+
+        if (count($fileProps) != 2) {
+            throw new SitemapException("File props size is not equal to 2.");
+        }
+
+        if ($fileProps[1] !== "xml") {
+            throw new Sitemap("File extension is not 'xml'.");
+        }
+
         $name = $fileProps[0];
         $extension = $fileProps[1];
         $path = $this->path."/".$name.".".$extension;
-        codecept_debug("WTF:".$path);
+
         $xmlWriter = new \XMLWriter();
         $xmlWriter->openMemory();
         $xmlWriter->startDocument('1.0', 'UTF-8');
         $xmlWriter->startElement('urlset');
         $xmlWriter->writeAttribute("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9");
+
         $part = 0;
         $i = 0;
         foreach ($this->list as $item) {
             $i++;
-
             $xmlWriter->startElement('url');
             $xmlWriter->writeElement('loc', $item->url);
             $xmlWriter->writeElement('lastmod', $item->date_time);
-            $xmlWriter->writeElement('priority', 0.8);
+            $xmlWriter->writeElement('priority', $item->priority);
             $xmlWriter->endElement();
 
             // Flush XML in memory to file every 1000 iterations

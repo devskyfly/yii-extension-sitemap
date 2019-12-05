@@ -5,9 +5,6 @@ use devskyfly\yiiExtensionSitemap\Container;
 use devskyfly\yiiExtensionSitemap\HostClient;
 use devskyfly\yiiExtensionSitemap\Sitemap;
 use app\fixtures\ArticleFixture;
-use app\models\Article;
-
-use function PHPSTORM_META\type;
 
 class ExtensionCest
 {
@@ -58,7 +55,6 @@ class ExtensionCest
         foreach ($generator as $item) {
             if ($pages_itr < 2) {
                 $mock = $mocks[$pages_itr];
-                
                 $I->assertEquals($item->content, $mock['content']);
                 $I->assertEquals($item->title, $mock['title']);
                 $I->assertEquals($item->description, $mock['description']);
@@ -69,7 +65,6 @@ class ExtensionCest
                 $I->assertEquals($articles[$pages_assets_itr]['content'], $item->content);
                 $I->assertEquals("bk ".$articles[$pages_assets_itr]['keywords']." ak", $item->keywords);
                 $I->assertEquals("bd ".$articles[$pages_assets_itr]['description']." ad", $item->description);
-                
                 $pages_assets_itr++;
             }
         }

@@ -3,6 +3,7 @@ namespace devskyfly\yiiExtensionSitemap;
 
 use yii\base\BaseObject;
 use devskyfly\php56\types\Lgc;
+use devskyfly\php56\types\Nmbr;
 use devskyfly\php56\types\Obj;
 use devskyfly\php56\types\Str;
 use devskyfly\php56\types\Vrbl;
@@ -16,22 +17,21 @@ class Page extends BaseObject
     public $title = "";
     public $keywords = "";
     public $description = "";
-    
     public $url = "";
-    
     public $class = "";
-    
     public $content = "";
     public $wrapper_tag = "main";
-    
     public $linked_object =null;
     public $callback = null;
-    
     public $container = null;
     public $asset = null;
 
+    public $priority = 0.5;
+
     public function init()
     {
+        parent::init();
+
         if(!Str::isString($this->title)){
             throw new \InvalidArgumentException('Property $title  is not string type.');
         }
@@ -60,12 +60,15 @@ class Page extends BaseObject
             throw new \InvalidArgumentException('Property $class is not string type.');
         }
         
+        if (!Nmbr::isNumeric($this->priority)) {
+            throw new \InvalidArgumentException('Property $priority is not number type.');
+        }
     }
 
     public function fill()
     {
         $linkedObject = $this->linked_object;
-        $callback=$this->callback;
+        $callback = $this->callback;
         
         if (Vrbl::isNull($linkedObject)) {
             $page = $this->container->hostClient->getPageContent($this->url);
@@ -92,16 +95,16 @@ class Page extends BaseObject
             
             if ($content) {
                 $this->content = $content->text;
-            }            
+            }
         } else {
             $callback($this);
-            $this->implemetAsset($this->asset);
+            $this->implemetAssetSeoData($this->asset);
         }
 
         return $this;
     }
 
-    protected function implemetAsset($asset)
+    protected function implemetAssetSeoData($asset)
     {
         if (Obj::isA($asset, PageAsset::class)) {
            $this->title = $asset->before_title." ".$this->title." ".$asset->after_title;
