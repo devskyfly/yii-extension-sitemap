@@ -4,7 +4,7 @@ return [
         'keywords'=>'index keywords',
         'description'=>'index description',
         'title'=>'Index',
-        'content'=>'Index page'
+        'content'=>'Index page',
     ],
     [
         'keywords'=>'about keywords',

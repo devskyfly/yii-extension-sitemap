@@ -1,7 +1,7 @@
 <?php
 return [
     'class'=>'devskyfly\yiiExtensionSitemap\Sitemap',
-            'path'=> '@app/web',
+            'path'=> '@app/web/tmpl',
             'container'=>[
                 'class'=>'devskyfly\yiiExtensionSitemap\Container',
                 'hostClient'=>[

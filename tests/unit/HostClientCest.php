@@ -18,4 +18,3 @@ class HostClientCest
         $hostclient->getPageContent('site/index');
     }
 }
-l

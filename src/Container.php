@@ -100,7 +100,7 @@ class Container extends BaseObject
         return $this;
     }
     
-    protected function initLists($callback=null)
+    protected function initLists($callback = null)
     {
         if (Vrbl::isNull($callback)) {
             $callback=$this->initCallback;
@@ -120,9 +120,9 @@ class Container extends BaseObject
      */
     protected function getPagesList()
     {
-        $list=$this->pagesList;
+        $list = $this->pagesList;
         
-        foreach ($list as $item){
+        foreach ($list as $item) {
             yield $item;
         }
     }
@@ -133,9 +133,9 @@ class Container extends BaseObject
      */
     protected function getPagesAssetList()
     {
-        $list=$this->pagesAssetList;
+        $list = $this->pagesAssetList;
         
-        foreach ($list as $item){
+        foreach ($list as $item) {
             yield $item;
         }
     }

@@ -25,6 +25,7 @@ use devskyfly\yiiExtensionSitemap\Page;
 use devskyfly\yiiExtensionSitemap\PageAsset;
 
 return $initCallback=function($container){
+
     /**********************************************************************/
     /** StaticPage **/
     /**********************************************************************/
@@ -52,31 +53,29 @@ return $initCallback=function($container){
         [
             'class'=>EntityWithoutSection::class,
             'route'=>'site/index',
-            
             'query_params'=>['active'=>'Y'],
             'init_callback'=>function($item){
                 return [
-                    'title'=>$item->extensions['page']->title,
-                    'keywords'=>$item->extensions['page']->keywords,
-                    'description'=>$item->extensions['page']->description,
-                    'route'=>'/moduleAdminPanel/contentPanel/entity-without-section',
-                    'route_params'=>['entity_id'=>$item->id]
+                    'title' => $item->extensions['page']->title,
+                    'keywords' => $item->extensions['page']->keywords,
+                    'description' => $item->extensions['page']->description,
+                    'route' => '/moduleAdminPanel/contentPanel/entity-without-section',
+                    'route_params' => ['entity_id'=>$item->id]
                 ];
             },
-            'content_callback'=>function($item){
-            return $item->extensions['page']->detail_text;
+            'content_callback' => function($item) {
+                return $item->extensions['page']->detail_text;
             }
-            ],
-            ];
+        ],
+    ];
     
     foreach ($pages_asserts as $page_config)
     {
-        $page_asset=new PageAsset($page_config);
+        $page_asset = new PageAsset($page_config);
         $container->insertPageAsset($page_asset);
     }
 };
 ```
-
 
 
 

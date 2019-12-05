@@ -6,62 +6,86 @@
  */
 class RoboFile extends \Robo\Tasks
 {
-    public function testsUnit()
+    //TESTS
+    /**
+     * Run all test suites or one, optional it runs local server.
+     * 
+     * --suite|s = ["all", "unit", "functional"]
+     * --localserver|l = false
+     * --debug|d = false
+     */
+    public function testsRun($opts = ["suite|s" => "all", "debug|d" => false,"localserver|l" => false])
     {
-        $task = $this->taskExec(__DIR__.'/vendor/bin/codecept run unit')->run();
-    }
+        $this->testsClear();
+        
+        $suites = [
+            "all",
+            "unit",
+            "functional"
+        ];
 
-    public function testsFunctional($port = 3000)
-    {
-        $collection = $this->collectionBuilder();
-        $collection
-        ->addTask($this->taskServer($port)
-            ->background()
-            ->dir(__DIR__.'/tests/appFunc/web/')
-        );
-        /*if ($port) {
-            $server = $this->taskServer($port)
-            ->dir(__DIR__.'/tests/appFunc/web/')
-            //->background()
-            ->run();
-        }*/
-        $collection->addTask($this->taskExec(__DIR__.'/vendor/bin/codecept run functional'));
-        $collection->run();
-
-        //if ($server->wasSuccessful()) {
-            //$task = $this->taskExec(__DIR__.'/vendor/bin/codecept run functional')->run();
-            //$server->stop();
-        //}
-    }
-
-    public function testsAcceptence()
-    {
-        $task = $this->taskExec(__DIR__.'/vendor/bin/codecept run unit')->run();
-    }
-
-    /*public function serverRun($dir = 'tests/appFunc/web', $port = 3000)
-    {
-        return $this->taskServer($port)->dir($dir)->background()->run();
-    }*/
-
-    protected $steps = 10;
-
-    public function progressIndicatorSteps()
-    {
-        return $this->steps;
-    }
-
-    public function run()
-    {
-        $exitCode = 0;
-        $errorMessage = "";
-
-        $this->startProgressIndicator();
-        for ($i = 0; $i < $this->steps; ++$i) {
-            $this->advanceProgressIndicator();
+        if (!in_array($opts["suite"], $suites)) {
+            throw new \InvalidArgumentException('Option suite is out of list:'.implode($suites));
         }
-        $this->stopProgressIndicator();
 
-        return new Result($this, $exitCode, $errorMessage, ['time' => $this->getExecutionTime()]);
+        if ($opts['localserver']) {
+            $this->testsSeverRun(["port" => 3000, "back" => true]);
+        }
+
+        $collection = $this->collectionBuilder();
+
+        if ($opts['suite'] == "all" || $opts['suite'] == "unit") {
+            $collection->addTask($this->taskExec(__DIR__.'/vendor/bin/codecept run unit'.($opts['debug']?" --debug":"")));
+        }
+
+        if ($opts['suite'] == "all" || $opts['suite'] == "functional") {
+            $collection->addTask($this->taskExec(__DIR__.'/vendor/bin/codecept run functional'.($opts['debug']?" --debug":"")));
+        }
+        
+        $collection->run();
     }
+
+    public function testsClear()
+    {
+        $files = glob($this->testsAppWebPath()."/tmpl/*.xml");
+        $this->taskFilesystemStack()
+        ->remove($files)
+        ->run();
+    }
+
+    protected function testsPath()
+    {
+        $path = getcwd()."/tests";
+        if (!file_exists($path)) {
+            throw new \RuntimeException("Dir {$path} does not exist.");
+        }
+        return $path;
+    }
+
+    protected function testsAppWebPath()
+    {
+        $path = $this->testsPath()."/app/web";
+        if (!file_exists($path)) {
+            throw new \RuntimeException("Dir {$path} does not exist.");
+        }
+        return $path;
+    }
+
+    /**
+     * Run local server in .
+     *
+     * --port integer
+     */
+    public function testsSeverRun($opts = ["port|p" => "3000", "back|b" => false])
+    {
+        $dir = $this->testsAppWebPath();
+        $server = $this->taskServer($opts["port"]);
+        if ($opts["back"]) {
+            $server->background();
+        }
+        $server->dir($dir)
+        ->run();
+    }
+
+    
 }

@@ -13,6 +13,7 @@ class ExtensionCest
 {
     public function _before(FunctionalTester $I)
     {
+
     }
 
     public function _fixtures()
@@ -47,7 +48,7 @@ class ExtensionCest
     {
         $sitemap = Yii::$app->sitemap;
         $container = $sitemap->container;
-        $mocks = require codecept_data_dir().'functional/getStaticPages.php';
+        $mocks = require codecept_data_dir().'common/container/getStaticPages.php';
         $generator = $container->getAllPages();
         
         $pages_itr = 0;
@@ -72,5 +73,14 @@ class ExtensionCest
                 $pages_assets_itr++;
             }
         }
+    }
+
+    /**
+     @depends checkContainer
+     */
+    public function sitemapGenerate(FunctionalTester $I)
+    {
+        $sitemap = Yii::$app->sitemap;
+        $sitemap->generate();
     }
 }

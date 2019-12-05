@@ -12,7 +12,7 @@
 		"yiisoft/yii2" : "~2.0.14",
 		"paquettg/php-html-parser":"^2.1",
 		"devskyfly/libs" : "dev-dev",
-		"devskyfly/php56" : "dev-dev",
+		"devskyfly/php56" : "^1.0.0",
 		"yiisoft/yii2-httpclient": "^2.0"
 	},
 	"autoload" : {

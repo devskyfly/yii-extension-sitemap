@@ -14,7 +14,7 @@ class SitemapCest
     {
         $container = Stub::makeEmpty(Container::class, 
             [
-            "getAllPages" => require(codecept_data_dir()."/unit/mocks/container/getAllPages.php")
+                "getAllPages" => require(codecept_data_dir()."common/container/getAllPages.php")
             ]
         );
 

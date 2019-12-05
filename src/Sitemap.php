@@ -3,9 +3,9 @@ namespace devskyfly\yiiExtensionSitemap;
 
 use Yii;
 use devskyfly\php56\libs\fileSystem\Dirs;
-use yii\base\BaseObject;
 use devskyfly\php56\types\Obj;
 use devskyfly\yiiExtensionSitemap\console\SitemapController;
+use yii\base\BaseObject;
 use yii\base\BootstrapInterface;
 use yii\console\Application as ConsoleApplication;
 
@@ -15,7 +15,7 @@ class Sitemap extends BaseObject implements BootstrapInterface
      *
      * @var string
      */
-    public $path='@frontend/web';
+    public $path = '@frontend/web/';
     
     /**
      * 
@@ -46,18 +46,23 @@ class Sitemap extends BaseObject implements BootstrapInterface
      */
     protected function initPath()
     {
-        $path = Yii::getAlias($this->path);
+        $this->path = Yii::getAlias($this->path);
         
-        if (!Dirs::dirExists($path)) {
-            throw new SitemapException("Path '{$path}' does not exist.");
+        if (!Dirs::dirExists($this->path)) {
+            throw new SitemapException("Path '{$this->path}' does not exist.");
         }
     }
 
     public function generate()
     {
         $pages = $this->container->getAllPages();
-        foreach ($pages as $page) {
-            
-        }
+        
+        $generator = new Generator([
+            'fileName' => "sitemap.xml",
+            'list' => $pages,
+            'path' => $this->path
+        ]);
+
+        $generator->generate();
     }    
 }

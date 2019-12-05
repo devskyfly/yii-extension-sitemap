@@ -11,7 +11,7 @@ use PHPHtmlParser\Dom;
 class Page extends BaseObject
 {
     public $searchable = true;
-    public $data_time = "";
+    public $date_time = "";
     
     public $title = "";
     public $keywords = "";
@@ -76,7 +76,7 @@ class Page extends BaseObject
             $title = $dom->find("title")[0];
             $keywords = $dom->find("meta[name='keywords']")[0];
             $description = $dom->find("meta[name='description']")[0];
-            $this->data_time = (new \DateTime())->format(\DateTime::ATOM);
+            $this->date_time = (new \DateTime())->format(\DateTime::ATOM);
             
             if ($title) {
                 $this->title = $title->text;
