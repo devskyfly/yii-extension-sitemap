@@ -71,7 +71,8 @@ class Page extends BaseObject
         $callback = $this->callback;
         
         if (Vrbl::isNull($linkedObject)) {
-            $page = $this->container->hostClient->getPageContent($this->url);
+            $url = "";
+            $page = $this->container->hostClient->getPageContent($this->url, $url);
             $dom = new Dom();
             $dom->loadStr($page, []);
             
@@ -96,6 +97,10 @@ class Page extends BaseObject
             if ($content) {
                 $this->content = $content->text;
             }
+
+            if ($url) {
+                $this->url = $url;
+            }
         } else {
             $callback($this);
             $this->implemetAssetSeoData($this->asset);
@@ -110,6 +115,8 @@ class Page extends BaseObject
            $this->title = $asset->before_title." ".$this->title." ".$asset->after_title;
            $this->keywords = $asset->before_keywords." ".$this->keywords." ".$asset->after_keywords;
            $this->description = $asset->before_description." ".$this->description." ".$asset->after_description;
+           $origin = $this->container->hostClient->origin;
+           $this->url = $origin."/".$this->url;
         }
         return $this;
     }

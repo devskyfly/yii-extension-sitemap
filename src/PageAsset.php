@@ -23,11 +23,12 @@ class PageAsset extends BaseObject
     public $after_description = "";
     
     public $entity_class = "";
-    public $route = "";
     public $query_params = [];
     
     public $item_callback = null;
     public $wrapper_tag = "main";
+
+    public $route = "";
 
     public $container = null;
 
@@ -36,56 +37,48 @@ class PageAsset extends BaseObject
     {
         parent::init();
 
-        if(!Str::isString($this->before_title)){
+        if (!Str::isString($this->before_title)) {
             throw new \InvalidArgumentException('Property $before_title  is not string type.');
         }
         
-        if(!Str::isString($this->before_keywords)){
+        if (!Str::isString($this->before_keywords)) {
             throw new \InvalidArgumentException('Property $before_keywords is not string type.');
         }
         
-        if(!Str::isString($this->before_description)){
+        if (!Str::isString($this->before_description)) {
             throw new \InvalidArgumentException('Property $before_description is not string type.');
         }
         
-        if(!Str::isString($this->after_title)){
+        if (!Str::isString($this->after_title)) {
             throw new \InvalidArgumentException('Property $title  is not string type.');
         }
         
-        if(!Str::isString($this->after_keywords)){
+        if (!Str::isString($this->after_keywords)) {
             throw new \InvalidArgumentException('Property $keywords is not string type.');
         }
         
-        if(!Str::isString($this->after_description)){
+        if (!Str::isString($this->after_description)) {
             throw new \InvalidArgumentException('Property $description is not string type.');
         }
         
-        if(!Str::isString($this->route)){
-            throw new \InvalidArgumentException('Property $route is not string type.');
-        }
-        
-        if(!Lgc::isBoolean($this->searchable)){
+        if (!Lgc::isBoolean($this->searchable)) {
             throw new \InvalidArgumentException('Property $searchable is not boolean type.');
         }
         
-        if(!Str::isString($this->entity_class)){
+        if (!Str::isString($this->entity_class)) {
             throw new \InvalidArgumentException('Property $entity_class is not string type.');
         }
         
-        if(!Arr::isArray($this->query_params)){
+        if (!Arr::isArray($this->query_params)) {
             throw new \InvalidArgumentException('Property $query_params is not array type.');
         }
         
-        /*if(!Vrbl::isCallable($this->item_callback)){
-            throw new \InvalidArgumentException('Property $item_callback is not callable type.');
-        }*/
-        
-        /*if(!Vrbl::isCallable($this->init_callback)){
-            throw new \InvalidArgumentException('Property $init_callback is not callable type.');
-        }*/
-        
-        if(!Str::isString($this->wrapper_tag)){
+        if (!Str::isString($this->wrapper_tag)) {
             throw new \InvalidArgumentException('Property $wrapper_tag is not string type.');
+        }
+
+        if (!Str::isString($this->route)) {
+            throw new \InvalidArgumentException('Property $route is not string type.');
         }
     }
     
@@ -95,11 +88,10 @@ class PageAsset extends BaseObject
      */
     public function getPagesList()
     {
-        //$init_callback=$this->init_callback;
         $cls = $this->entity_class;
         $query = $cls::find()->where($this->query_params);
         $item_callback = $this->item_callback;
-        
+
         foreach ($query->each(10) as $item) {
            $config['searchable'] = $this->searchable;
            $config['linked_object'] = $item;
@@ -107,6 +99,7 @@ class PageAsset extends BaseObject
            $config['container'] = $this->container;
            $config['asset'] = $this;
            $page = new Page($config);
+           
            yield $page;
         }
     }

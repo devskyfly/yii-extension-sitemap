@@ -15,6 +15,9 @@ return function(Container $container)
         $page->content = $page->linked_object->content;
         $page->keywords = $page->linked_object->keywords;
         $page->description = $page->linked_object->description;
+
+        $route = $page->asset->route;
+        $page->url = sprintf($route, $page->title);
     };
 
     $config = [
@@ -25,7 +28,8 @@ return function(Container $container)
         'before_description' =>"bd",
         'after_description' =>"ad",
         'item_callback' => $item_callback,
-        'entity_class' => Article::class, 
+        'entity_class' => Article::class,
+        'route' => "?r=article/index&code=%s",
         'query_params'=>[]
     ];
 

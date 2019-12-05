@@ -12,25 +12,25 @@ class Container extends BaseObject
      * 
      * @var callable
      */
-    public $initCallback=null;
+    public $initCallback = null;
     
     /**
      *
      * @var HostClient
      */
-    public $hostClient=null;
+    public $hostClient = null;
 
     /**
      *
      * @var Page[]
      */
-    protected $pagesList=[];
+    protected $pagesList = [];
     
     /**
      *
      * @var PageAsset[]
      */
-    protected $pagesAssetList=[];
+    protected $pagesAssetList = [];
     
     public function init()
     {

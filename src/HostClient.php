@@ -19,9 +19,10 @@ class HostClient extends BaseObject
         $this->client = new Client();
     }
 
-    public function getPageContent($url)
+    public function getPageContent($url, &$fullUrl)
     {
         $url = $this->origin."/".$url;
+        $fullUrl = $url;
         $request = $this->client->createRequest()
         ->setMethod('GET')
         ->setUrl($url);

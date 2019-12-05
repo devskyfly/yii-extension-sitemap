@@ -39,8 +39,7 @@ return $initCallback = function($container){
         ],
     ];
 
-    foreach ($pages as $page_config)
-    {
+    foreach ($pages as $page_config) {
         $page = new Page($page_config);
         $container->insertPage($page);
     }
