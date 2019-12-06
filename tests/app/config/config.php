@@ -15,16 +15,21 @@ return [
     ],
     'language' => 'en-US',
     'controllerNamespace'=>'app\\controllers',
+    
     'components' => 
         array_merge($components,
             [
                 'urlManager' => [
                 'showScriptName' => true,
                 ],
+                'errorHandler' => [
+                    'errorAction' => 'site/error',
+                ],
                 'request' => [
                 'cookieValidationKey' => 'test',
                 'enableCsrfValidation' => false,
                 ]
         ]),
+    
     //'params' => $params,
 ];

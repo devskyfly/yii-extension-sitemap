@@ -2,11 +2,8 @@
 namespace devskyfly\yiiExtensionSitemap;
 
 use devskyfly\php56\types\Vrbl;
-use Yii;
 use yii\base\BaseObject;
-use yii\helpers\Url;
 use yii\httpclient\Client;
-use PHPHtmlParser\Dom;
 
 class HostClient extends BaseObject
 {
@@ -22,6 +19,9 @@ class HostClient extends BaseObject
     public function getPageContent($url, &$fullUrl)
     {
         $url = $this->origin."/".$url;
+
+        \codecept_debug("-***-".$url);
+
         $fullUrl = $url;
         $request = $this->client->createRequest()
         ->setMethod('GET')

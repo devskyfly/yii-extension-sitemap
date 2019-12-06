@@ -26,7 +26,7 @@ class PageAsset extends BaseObject
     public $query_params = [];
     
     public $item_callback = null;
-    public $wrapper_tag = "main";
+    public $wrapper_tag = "";
 
     public $route = "";
 
@@ -97,6 +97,7 @@ class PageAsset extends BaseObject
            $config['linked_object'] = $item;
            $config['callback'] = $item_callback;
            $config['container'] = $this->container;
+           $config['wrapper_tag'] = $this->wrapper_tag;
            $config['asset'] = $this;
            $page = new Page($config);
            

@@ -70,7 +70,15 @@ class Page extends BaseObject
         $linkedObject = $this->linked_object;
         $callback = $this->callback;
         
-        if (Vrbl::isNull($linkedObject)) {
+        if (!Vrbl::isNull($this->asset)&&!empty($this->wrapper_tag)) {
+
+        } elseif (!Vrbl::isNull($this->asset)&&empty($this->wrapper_tag)) {
+
+        } else {
+
+        }
+
+        if (!empty($this->wrapper_tag)) {
             $url = "";
             $page = $this->container->hostClient->getPageContent($this->url, $url);
             $dom = new Dom();
@@ -103,13 +111,13 @@ class Page extends BaseObject
             }
         } else {
             $callback($this);
-            $this->implemetAssetSeoData($this->asset);
         }
 
+        $this->implementAssetSeoData($this->asset);
         return $this;
     }
 
-    protected function implemetAssetSeoData($asset)
+    protected function implementAssetSeoData($asset)
     {
         if (Obj::isA($asset, PageAsset::class)) {
            $this->title = $asset->before_title." ".$this->title." ".$asset->after_title;

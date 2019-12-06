@@ -31,12 +31,8 @@ return $initCallback = function($container){
     /**********************************************************************/
         
     $pages=[
-        [
-            'title'=>'Index',
-            'description'=>'Описание страницы',
-            'keywords'=>'Ключевые слова',
-            'route'=>'site/index'
-        ],
+        ['url'=>'?r=site/index', 'priority' => 1],
+        ['url'=>'?r=site/about', 'priority' => 0.8]
     ];
 
     foreach ($pages as $page_config) {
@@ -48,24 +44,29 @@ return $initCallback = function($container){
     /** DinamicPages **/
     /**********************************************************************/
 
-    $pages_asserts = [
-        [
-            'class' => EntityWithoutSection::class,
-            'route' => 'site/index',
-            'query_params' => ['active' => 'Y'],
-            'init_callback' => function($item){
-                return [
-                    'title' => $item->extensions['page']->title,
-                    'keywords' => $item->extensions['page']->keywords,
-                    'description' => $item->extensions['page']->description,
-                    'route' => '/moduleAdminPanel/contentPanel/entity-without-section',
-                    'route_params' => ['entity_id'=>$item->id]
-                ];
-            },
-            'content_callback' => function($item) {
-                return $item->extensions['page']->detail_text;
-            }
-        ],
+    $item_callback = function (Page $page) {
+        $page->title = $page->linked_object->name;
+        $page->content = $page->linked_object->content;
+        $page->keywords = $page->linked_object->keywords;
+        $page->description = $page->linked_object->description;
+
+        $route = $page->asset->route;
+        $page->url = sprintf($route, $page->title);
+    };
+
+    $pages_asserts[] = [
+        $config = [
+            'before_title' =>"bt",
+            'after_title' =>"at",
+            'before_keywords' =>"bk",
+            'after_keywords' =>"ak",
+            'before_description' =>"bd",
+            'after_description' =>"ad",
+            'item_callback' => $item_callback,
+            'entity_class' => Article::class,
+            'route' => "?r=article/index&code=%s",
+            'query_params'=>[]
+        ];
     ];
 
     foreach ($pages_asserts as $page_config) {

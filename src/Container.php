@@ -123,6 +123,7 @@ class Container extends BaseObject
         }
 
         $callback($this);
+        
         return $this;
     }
 

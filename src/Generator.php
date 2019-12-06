@@ -90,7 +90,7 @@ class Generator extends BaseObject
             $i++;
             $xmlWriter->startElement('url');
             $xmlWriter->writeElement('loc', $item->url);
-            $xmlWriter->writeElement('lastmod', $item->date_time);
+            $xmlWriter->writeElement('lastmod', (new \DateTime($item->date_time))->format("Y-m-d"));
             $xmlWriter->writeElement('priority', $item->priority);
             $xmlWriter->endElement();
 
@@ -101,6 +101,7 @@ class Generator extends BaseObject
                 }
 
                 $result = file_put_contents($path, $xmlWriter->flush(true), FILE_APPEND);
+
                 if (!$result) {
                     throw new SitemapException("Can't write file {$path}.");
                 }
