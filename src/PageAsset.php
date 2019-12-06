@@ -29,7 +29,7 @@ class PageAsset extends BaseObject
     public $wrapper_tag = "";
 
     public $route = "";
-
+    public $route_params = [];
     public $container = null;
 
     

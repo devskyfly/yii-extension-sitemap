@@ -18,6 +18,10 @@ class HostClient extends BaseObject
 
     public function getPageContent($url, &$fullUrl)
     {
+        if (empty($url)) {
+            throw new Sitemap('Parameter $url is empty.');
+        }
+
         $url = $this->origin."/".$url;
 
         \codecept_debug("-***-".$url);
