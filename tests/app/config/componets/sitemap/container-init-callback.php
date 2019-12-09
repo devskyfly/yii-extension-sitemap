@@ -9,12 +9,12 @@ use devskyfly\yiiExtensionSitemap\PageAsset;
 return function(Container $container)
 {
 
-    //Static pages
+    //Static pages (Data from static pages)
 
     $container->insertPage(new Page(['url'=>'?r=site/index', 'priority' => 1]));
     $container->insertPage(new Page(['url'=>'?r=site/about', 'priority' => 0.8]));
 
-    //Articles
+    //Articles (Data from database)
 
     $article_item_callback = function (Page $page) {
         $page->title = $page->linked_object->name;
@@ -40,18 +40,8 @@ return function(Container $container)
 
     $container->insertPageAsset(new PageAsset($config));
 
-    //News
+    //News (Data from pages by assets)
     
-    /*$news_item_callback = function (Page $page) {
-        $page->title = $page->linked_object->name;
-        $page->content = $page->linked_object->content;
-        $page->keywords = $page->linked_object->keywords;
-        $page->description = $page->linked_object->description;
-
-        $route = $page->asset->route;
-        $page->url = sprintf($route, $page->title);
-    };*/
-
     $config = [
         'before_title' => "bt",
         'after_title' => "at",
