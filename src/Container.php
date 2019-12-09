@@ -68,9 +68,7 @@ class Container extends BaseObject
         foreach ($pagesAssetsList as $asset) {
             $generator = $asset->getPagesList();
             foreach ($generator as $page) {
-                
                 $page->fill();
-                
                 yield $page;
             }
         }

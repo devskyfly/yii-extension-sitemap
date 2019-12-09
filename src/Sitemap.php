@@ -23,12 +23,21 @@ class Sitemap extends BaseObject implements BootstrapInterface
      */
     public $container = null;
 
+    /**
+     * 
+     * @var Logger
+     */
+    public $logger = null;
+
     public function init()
     {
         parent::init();
+        
         if (!(Obj::isA($this->container, Container::class))) {
             $this->container = Yii::createObject($this->container);
         }
+
+        $this->logger =  new Logger();
         $this->initPath();
     }
 
