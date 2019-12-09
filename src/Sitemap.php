@@ -4,6 +4,7 @@ namespace devskyfly\yiiExtensionSitemap;
 use Yii;
 use devskyfly\php56\libs\fileSystem\Dirs;
 use devskyfly\php56\types\Obj;
+use devskyfly\php56\types\Vrbl;
 use devskyfly\yiiExtensionSitemap\console\SitemapController;
 use yii\base\BaseObject;
 use yii\base\BootstrapInterface;
@@ -11,6 +12,8 @@ use yii\console\Application as ConsoleApplication;
 
 class Sitemap extends BaseObject implements BootstrapInterface
 {
+    private static $instance = null;
+
     /**
      *
      * @var string
@@ -27,12 +30,21 @@ class Sitemap extends BaseObject implements BootstrapInterface
      * 
      * @var Logger
      */
-    public $logger = null;
+    public $logger = null; 
+
+    public function __construct($config = [])
+    {
+        parent::__construct($config);
+    }
 
     public function init()
     {
         parent::init();
         
+        if (Vrbl::isNull(self::$instance)) {
+            self::$instance = $this;
+        }
+
         if (!(Obj::isA($this->container, Container::class))) {
             $this->container = Yii::createObject($this->container);
         }
@@ -40,6 +52,20 @@ class Sitemap extends BaseObject implements BootstrapInterface
         $this->logger =  new Logger();
         $this->initPath();
     }
+
+    /**
+     *
+     * @return Sitemap
+     */
+    public static function getInstance() 
+    {
+        if (!Vrbl::isNull(self::$instance)) {
+            return self::$instance;
+        } else {
+            return new self();
+        }
+    }
+
 
     public function bootstrap($app)
     {

@@ -33,7 +33,7 @@ class Logger extends BaseObject
         $this->list[] = ['url' => $url, 'msg' => $msg];
     }
 
-    public getList()
+    public function getList()
     {
         foreach ($this->list as $item) {
             yield $item;
