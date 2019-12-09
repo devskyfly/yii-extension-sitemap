@@ -42,7 +42,7 @@ return function(Container $container)
 
     //News
     
-    $news_item_callback = function (Page $page) {
+    /*$news_item_callback = function (Page $page) {
         $page->title = $page->linked_object->name;
         $page->content = $page->linked_object->content;
         $page->keywords = $page->linked_object->keywords;
@@ -50,7 +50,7 @@ return function(Container $container)
 
         $route = $page->asset->route;
         $page->url = sprintf($route, $page->title);
-    };
+    };*/
 
     $config = [
         'before_title' => "bt",
@@ -59,7 +59,7 @@ return function(Container $container)
         'after_keywords' => "ak",
         'before_description' => "bd",
         'after_description' => "ad",
-        'item_callback' => $news_item_callback,
+        'item_callback' => null,
         'entity_class' => News::class,
         'route' => "?r=news/detail&name=%s",
         'route_params' => ['name'],

@@ -58,16 +58,19 @@ class Container extends BaseObject
         $this->initLists();
         $generator = $this->getPagesList();
         
-        foreach ($generator as $page){
+        foreach ($generator as $page) {
             $page->fill();
             yield $page;
         }
         
-        $pagesAssetList = $this->getPagesAssetList();
-        foreach ($pagesAssetList as $asset){
+        $pagesAssetsList = $this->getPagesAssetList();
+
+        foreach ($pagesAssetsList as $asset) {
             $generator = $asset->getPagesList();
-            foreach ($generator as $page){
+            foreach ($generator as $page) {
+                
                 $page->fill();
+                
                 yield $page;
             }
         }

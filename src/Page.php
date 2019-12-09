@@ -51,11 +51,12 @@ class Page extends BaseObject
         if (!Vrbl::isNull($this->asset)) {
             $params = [];
 
-            foreach ($this->asset->route_params as $param) {
-                $params[] = $param;
+            foreach ($this->asset->route_params as $param_name) {
+                $params[] = urlencode($this->linked_object[$param_name]);
             }
-
-            $this->url = vsprintf($this->asset->route, $params);
+            $url = vsprintf($this->asset->route, $params);
+            
+            $this->url = $url;
         }
 
         if (!Str::isString($this->wrapper_tag)) {
@@ -83,9 +84,11 @@ class Page extends BaseObject
         if (!Vrbl::isNull($this->asset)
             && !empty($this->wrapper_tag)) {
             $this->fillByClient();
+
         } elseif (!Vrbl::isNull($this->asset)
             && empty($this->wrapper_tag)) {
             $callback($this);
+            
         } else {
             $this->fillByClient();
         }

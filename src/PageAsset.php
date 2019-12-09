@@ -3,9 +3,7 @@ namespace devskyfly\yiiExtensionSitemap;
 
 use devskyfly\php56\types\Arr;
 use devskyfly\php56\types\Lgc;
-use devskyfly\php56\types\Obj;
 use devskyfly\php56\types\Str;
-use devskyfly\php56\types\Vrbl;
 use yii\base\BaseObject;
 
 class PageAsset extends BaseObject
@@ -92,16 +90,19 @@ class PageAsset extends BaseObject
         $query = $cls::find()->where($this->query_params);
         $item_callback = $this->item_callback;
 
-        foreach ($query->each(10) as $item) {
-           $config['searchable'] = $this->searchable;
-           $config['linked_object'] = $item;
-           $config['callback'] = $item_callback;
-           $config['container'] = $this->container;
-           $config['wrapper_tag'] = $this->wrapper_tag;
-           $config['asset'] = $this;
-           $page = new Page($config);
+        foreach ($query->each(1) as $item) {
+            
+            $config = [];
+            $config['searchable'] = $this->searchable;
+            $config['linked_object'] = $item;
+            $config['callback'] = $item_callback;
+            $config['container'] = $this->container;
+            $config['wrapper_tag'] = $this->wrapper_tag;
+            $config['asset'] = $this;
            
-           yield $page;
+            $page = new Page($config);
+           
+            yield $page;
         }
     }
 }

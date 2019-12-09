@@ -24,8 +24,6 @@ class HostClient extends BaseObject
 
         $url = $this->origin."/".$url;
 
-        \codecept_debug("-***-".$url);
-
         $fullUrl = $url;
         $request = $this->client->createRequest()
         ->setMethod('GET')

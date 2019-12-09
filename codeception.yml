@@ -13,4 +13,5 @@ modules:
     config:
         Yii2:
             part: [orm, fixtures]
+            cleanup: false
             configFile: 'tests/app/config/config.php'
