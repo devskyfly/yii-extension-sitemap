@@ -139,7 +139,7 @@ class Page extends BaseObject
            $this->keywords = $asset->before_keywords." ".$this->keywords." ".$asset->after_keywords;
            $this->description = $asset->before_description." ".$this->description." ".$asset->after_description;
            $origin = $this->container->hostClient->origin;
-           $this->url = $origin."/".$this->url;
+           $this->url = $this->url;
         }
         return $this;
     }
