@@ -1403,16 +1403,16 @@
         },
         {
             "name": "devskyfly/robocmd",
-            "version": "v1.0.3",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/devskyfly/robocmd.git",
-                "reference": "cdcaccf5ff1fa5227ae74a5cb8aeada3ac371ccf"
+                "reference": "e349a74ce3d98c23a13541c8ec2a6a3266052654"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/devskyfly/robocmd/zipball/cdcaccf5ff1fa5227ae74a5cb8aeada3ac371ccf",
-                "reference": "cdcaccf5ff1fa5227ae74a5cb8aeada3ac371ccf",
+                "url": "https://api.github.com/repos/devskyfly/robocmd/zipball/e349a74ce3d98c23a13541c8ec2a6a3266052654",
+                "reference": "e349a74ce3d98c23a13541c8ec2a6a3266052654",
                 "shasum": ""
             },
             "require-dev": {
@@ -1435,7 +1435,7 @@
                 }
             ],
             "description": "Assets of commands.",
-            "time": "2019-12-05T08:56:45+00:00"
+            "time": "2019-12-10T09:23:05+00:00"
         },
         {
             "name": "dflydev/dot-access-data",

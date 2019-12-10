@@ -9,13 +9,13 @@ class RoboFile extends \Robo\Tasks
 
     public function testsClear()
     {
-        
         $wepPath = $this->testsAppWebPath();
         $tmpPath = $wepPath.'/tmpl';
-
-        
         $tmlFiles = glob($tmpPath."/*");
         $this->say(implode(",", $tmlFiles));
-        $this->taskFilesystemStack()->remove($tmlFiles)->run();
+        $this->taskFilesystemStack()
+        ->remove($tmlFiles)
+        ->run();
     }
+
 }

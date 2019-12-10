@@ -50,6 +50,7 @@ class Sitemap extends BaseObject implements BootstrapInterface
         }
 
         $this->logger =  new Logger();
+        
         $this->initPath();
     }
 
